@@ -81,7 +81,8 @@ node('jenkins-jenkins-slave') {
             vulnerabilities: [
               defcon1: 0,
               critical: 0,
-              high: 1,
+#              high: 1,
+              high: 0,
             ],
             contents: [
               defcon1: 0,
