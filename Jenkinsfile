@@ -2,7 +2,7 @@ import groovy.json.JsonBuilder
 
 node('jenkins-jenkins-slave') {
   withEnv(['REPOSITORY=miau',
-  'GIT_ACCOUNT=https://github.com/mawinkler']) {
+  'GIT_ACCOUNT=https://github.com/jerzyrybak']) {
     stage('Pull Image from Git') {
       script {
         git "${GIT_ACCOUNT}/${REPOSITORY}.git"
