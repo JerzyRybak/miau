@@ -9,7 +9,7 @@ FROM ubuntu:16.04
 
 # Install Python modules needed by the Python app
 #COPY requirements.txt /usr/src/app/
-3RUN pip3 install --no-cache-dir -r /usr/src/app/requirements.txt
+#RUN pip3 install --no-cache-dir -r /usr/src/app/requirements.txt
 
 # Copy files required for the app to run
 #COPY app.py /usr/src/app/
