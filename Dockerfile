@@ -1,6 +1,6 @@
 # base image
 #FROM alpine:3.7
-FROM ubuntu:16.4
+FROM ubuntu:16.04
 #FROM alpine:latest
 
 # Install python 3 and pip
