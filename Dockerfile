@@ -4,7 +4,8 @@ FROM ubuntu:16.04
 #FROM alpine:latest
 
 # Install python 3 and pip
-RUN apk add --update python3
+#RUN apk add --update python3
+RUN apt-get install python3 pip3
 
 # Install Python modules needed by the Python app
 COPY requirements.txt /usr/src/app/
