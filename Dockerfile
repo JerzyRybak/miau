@@ -5,7 +5,7 @@ FROM ubuntu:16.04
 
 # Install python 3 and pip
 #RUN apk add --update python3
-RUN apt-get install python3 pip3
+RUN apt-get -y install python3 pip3
 
 # Install Python modules needed by the Python app
 COPY requirements.txt /usr/src/app/
