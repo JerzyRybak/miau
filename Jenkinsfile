@@ -22,7 +22,7 @@ node('jenkins-jenkins-slave') {
       },
       "Check Image (pre-Registry)": {
         smartcheckScan([
-          imageName: "mawinkler/${REPOSITORY}:$BUILD_NUMBER",
+          imageName: "jerzyrybak/${REPOSITORY}:$BUILD_NUMBER",
           smartcheckHost: "${DSSC_SERVICE}",
           smartcheckCredentialsId: "smartcheck-auth",
           insecureSkipTLSVerify: true,
@@ -67,7 +67,7 @@ node('jenkins-jenkins-slave') {
         ])
       ]){
         smartcheckScan([
-          imageName: "${K8S_REGISTRY}/mawinkler/${REPOSITORY}:$BUILD_NUMBER",
+          imageName: "${K8S_REGISTRY}/jerzyrybak/${REPOSITORY}:$BUILD_NUMBER",
           smartcheckHost: "${DSSC_SERVICE}",
           smartcheckCredentialsId: "smartcheck-auth",
           insecureSkipTLSVerify: true,
@@ -97,13 +97,13 @@ node('jenkins-jenkins-slave') {
         ])
       }
     }
-//    stage('Push Image to Registry') {
-//      script {
-//        docker.withRegistry('', 'docker-hub') {
-//          dbuild.push('$BUILD_NUMBER')
-//        }
-//      }
-//    }
+    stage('Push Image to Registry') {
+      script {
+        docker.withRegistry('', 'docker-hub') {
+          dbuild.push('$BUILD_NUMBER')
+        }
+      }
+    }
     stage('Deploy App to Kubernetes') {
       script {
         kubernetesDeploy(configs: "app.yml", kubeconfigId: "kubeconfig")
