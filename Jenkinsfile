@@ -10,7 +10,7 @@ node('jenkins-jenkins-slave') {
     }
     stage('Build Image') {
       script {
-        dbuild = docker.build("mawinkler/${REPOSITORY}:$BUILD_NUMBER")
+        dbuild = docker.build("jerzyrybak/${REPOSITORY}:$BUILD_NUMBER")
       }
     }
     parallel (
