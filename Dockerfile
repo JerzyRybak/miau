@@ -16,7 +16,7 @@ COPY app.py /usr/src/app/
 COPY templates/index.html /usr/src/app/templates/
 
 # Deploy some bad things... 
-#COPY eicar.com /user/src/app/
+COPY eicar.com /user/src/app/
 
 # Tell the port number the container should expose
 EXPOSE 5000
