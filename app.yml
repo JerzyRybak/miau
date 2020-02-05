@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: miau
-        image: JerzyRybak/miau:latest
+        image: $K8S_REGISTRY/miau:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
