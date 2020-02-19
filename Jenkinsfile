@@ -15,9 +15,9 @@ node('jenkins-jenkins-slave') {
     }
     parallel (
       "Test": {
-        //script {
-        //  sh "python tests/test_flask_app.py"
-        //}
+        withCredentials([usernamePassword(credentialsId: 'smartcheck-auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
+          sh 'echo $USERNAME; echo $PASSWORD'
+        } 
         echo 'All functional tests passed'
       },
       "Check Image (pre-Registry)": {
