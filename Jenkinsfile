@@ -16,7 +16,7 @@ node('jenkins-jenkins-slave') {
     parallel (
       "Test": {
         withCredentials([usernamePassword(credentialsId: 'smartcheck-auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-          sh 'echo $USERNAME | od -a; echo $PASSWORD'
+          sh 'echo $USERNAME | od -a; echo $PASSWORD|od -a'
         } 
         echo 'All functional tests passed'
       },
