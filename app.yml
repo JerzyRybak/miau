@@ -16,13 +16,16 @@ spec:
   selector:
     app: miau
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: miau
   name: miau
 spec:
+  selector: 
+    matchLabels:
+      app: miau
   replicas: 1
   template:
     metadata:
