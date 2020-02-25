@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: miau
-        image: 172.16.217.20:32000/miau:latest
+        image: localhost:32000/miau:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
