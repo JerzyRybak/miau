@@ -97,6 +97,13 @@ node('jenkins-jenkins-slave') {
         ])
       }
     }
+    stage('Push Image to Registry') {
+      script {
+        docker.withRegistry("http://localhost:32000") {
+          dbuild.push()
+        }
+      }
+    }
     stage('Deploy App to Kubernetes') {
       script {
         kubernetesDeploy(configs: "app.yml", kubeconfigId: "kubeconfig")
