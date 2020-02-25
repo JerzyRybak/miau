@@ -71,11 +71,7 @@ node('jenkins-jenkins-slave') {
         // secretNamespace: "default",
         // secretName: "cluster-registry2",
         kubernetesDeploy(configs: "app.yml",
-                         kubeconfigId: "kubeconfig",
-                         enableConfigSubstitution: true,
-                         dockerCredentials: [
-                           [credentialsId: "registry-auth", url: "${K8S_REGISTRY}"],
-                         ])
+                         kubeconfigId: "kubeconfig")
       }
     }
   }
