@@ -1,28 +1,27 @@
 import groovy.json.JsonBuilder
 
 node('jenkins-jenkins-slave') {
-  withEnv(['REPOSITORY=miau',
-  'GIT_ACCOUNT=https://github.com/JerzyRybak']) {
+  withEnv(['REPOSITORY=miau']) {
     stage('Pull Image from Git') {
       script {
-        git "${GIT_ACCOUNT}/${REPOSITORY}.git"
+        git (url: "${scm.userRemoteConfigs[0].url}", credentialsId: "github-auth")
       }
     }
     stage('Build Image') {
       script {
-        dbuild = docker.build("jerzyrybak/${REPOSITORY}:$BUILD_NUMBER")
+        dbuild = docker.build("${REPOSITORY}:$BUILD_NUMBER")
       }
     }
     parallel (
       "Test": {
-        withCredentials([usernamePassword(credentialsId: 'smartcheck-auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
-          sh 'echo $USERNAME | od -a; echo $PASSWORD|od -a'
-        } 
+        //script {
+        //  sh "python tests/test_app.py"
+        //}
         echo 'All functional tests passed'
       },
       "Check Image (pre-Registry)": {
         smartcheckScan([
-          imageName: "jerzyrybak/${REPOSITORY}:$BUILD_NUMBER",
+          imageName: "${REPOSITORY}:$BUILD_NUMBER",
           smartcheckHost: "${DSSC_SERVICE}",
           smartcheckCredentialsId: "smartcheck-auth",
           insecureSkipTLSVerify: true,
@@ -35,12 +34,12 @@ node('jenkins-jenkins-slave') {
             vulnerabilities: [
               defcon1: 0,
               critical: 0,
-              high: 1,
+              high: 0,
             ],
             contents: [
               defcon1: 0,
               critical: 0,
-              high: 1,
+              high: 0,
             ],
             checklists: [
               defcon1: 0,
@@ -54,59 +53,29 @@ node('jenkins-jenkins-slave') {
     stage('Push Image to Registry') {
       script {
         docker.withRegistry("https://${K8S_REGISTRY}", 'registry-auth') {
-          dbuild.push()
+          dbuild.push('$BUILD_NUMBER')
+          dbuild.push('latest')
         }
       }
     }
-    stage('Check Image (Registry)') {
-      withCredentials([
-        usernamePassword([
-          credentialsId: "registry-auth",
-          usernameVariable: "REGISTRY_USERNAME",
-          passwordVariable: "REGISTRY_PASSWORD",
-        ])
-      ]){
-        smartcheckScan([
-          imageName: "${K8S_REGISTRY}/jerzyrybak/${REPOSITORY}:$BUILD_NUMBER",
-          smartcheckHost: "${DSSC_SERVICE}",
-          smartcheckCredentialsId: "smartcheck-auth",
-          insecureSkipTLSVerify: true,
-          insecureSkipRegistryTLSVerify: true,
-          imagePullAuth: new groovy.json.JsonBuilder([
-            username: REGISTRY_USERNAME,
-            password: REGISTRY_PASSWORD
-          ]).toString(),
-          findingsThreshold: new groovy.json.JsonBuilder([
-            malware: 0,
-            vulnerabilities: [
-              defcon1: 0,
-              critical: 0,
-              high: 1,
-            ],
-            contents: [
-              defcon1: 0,
-              critical: 0,
-              high: 1,
-            ],
-            checklists: [
-              defcon1: 0,
-              critical: 0,
-              high: 0,
-            ],
-          ]).toString(),
-        ])
-      }
-    }
-    stage('Push Image to Registry') {
+    stage('Push Image to local Registry') {
       script {
         docker.withRegistry("http://localhost:32000") {
           dbuild.push()
         }
       }
     }
+    
     stage('Deploy App to Kubernetes') {
       script {
-        kubernetesDeploy(configs: "app.yml", kubeconfigId: "kubeconfig")
+        // secretNamespace: "default",
+        // secretName: "cluster-registry2",
+        kubernetesDeploy(configs: "app.yml",
+                         kubeconfigId: "kubeconfig",
+                         enableConfigSubstitution: true,
+                         dockerCredentials: [
+                           [credentialsId: "registry-auth", url: "${K8S_REGISTRY}"],
+                         ])
       }
     }
   }
