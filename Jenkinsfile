@@ -61,7 +61,7 @@ node('jenkins-jenkins-slave') {
     stage('Push Image to local Registry') {
       script {
         docker.withRegistry("http://localhost:32000") {
-          dbuild.push()
+          dbuild.push('latest')
         }
       }
     }
