@@ -70,8 +70,7 @@ node('jenkins-jenkins-slave') {
       script {
         // secretNamespace: "default",
         // secretName: "cluster-registry2",
-        kubernetesDeploy(configs: "app.yml",
-                        kubeConfig: [path:"/config"])
+        kubernetesDeploy(configs: "app.yml")
       }
     }
   }
